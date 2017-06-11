@@ -17,7 +17,8 @@ export function queryDailyTracks(bbox: number[]) {
   const tolerance = GeoLib.getDistance([bbox[0], bbox[1]], [bbox[2], bbox[3]]) / 1000000000 * 3
 
   //language=PostgreSQL
-  const query = `SELECT
+  const query = `
+    SELECT
       date, 
       ST_AsGeoJSON(ST_Simplify(St_MakeLine(point::geometry ORDER BY timestamp), ${tolerance}))::json AS route
 		FROM (
@@ -30,7 +31,8 @@ export function queryDailyTracks(bbox: number[]) {
       WHERE point && ST_MakeEnvelope($1, $2, $3, $4)
       ORDER BY timestamp ASC
     ) data 
-    GROUP BY date`
+    GROUP BY date
+    ORDER BY date`
 
   return db.any(query, bbox)
 }
