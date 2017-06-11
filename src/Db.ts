@@ -1,6 +1,6 @@
 import {IDatabase, IMain} from 'pg-promise'
 import * as PgPromise from 'pg-promise'
-import GeoLib = require('geolib')
+const GeoLib = require('geolib')
 
 const dbConfig = {
   host: process.env.DB_HOST || 'localhost',
