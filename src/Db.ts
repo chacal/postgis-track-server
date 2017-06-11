@@ -18,10 +18,13 @@ export function queryDailyTracks(bbox: number[]) {
 
   //language=PostgreSQL
   const query = `SELECT
-    date, ST_AsGeoJSON(ST_Simplify(St_MakeLine(point::geometry), ${tolerance}))::json AS route
+      date, 
+      ST_AsGeoJSON(ST_Simplify(St_MakeLine(point::geometry ORDER BY timestamp), ${tolerance}))::json AS route
 		FROM (
       SELECT
-        date_trunc('day', timestamp) as date, point 
+        date_trunc('day', timestamp) as date, 
+        point, 
+        timestamp
       FROM
         track
       WHERE point && ST_MakeEnvelope($1, $2, $3, $4)
