@@ -2,11 +2,13 @@ import * as express from 'express'
 import cors = require('cors')
 import {queryDailyTracks} from './Db'
 
+const MOUNT_PREFIX = process.env.MOUNT_PREFIX || ''
+
 const app = express()
 app.use(cors())
 
 
-app.get('/daily-tracks', (req, res, next) => {
+app.get(MOUNT_PREFIX + '/daily-tracks', (req, res, next) => {
   const bbox = req.query.bbox.split(",")
 
   queryDailyTracks(bbox)
