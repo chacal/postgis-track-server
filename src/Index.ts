@@ -8,10 +8,10 @@ const app = express()
 app.use(cors())
 
 
-app.get(MOUNT_PREFIX + '/daily-tracks', (req, res, next) => {
+app.get(MOUNT_PREFIX + '/daily-tracks/:vesselId', (req, res, next) => {
   const bbox = req.query.bbox.split(",")
 
-  queryDailyTracks(bbox)
+  queryDailyTracks(bbox, req.params.vesselId)
     .then(tracks => res.json(tracks))
     .catch(next)
 })
