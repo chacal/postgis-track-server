@@ -11,7 +11,7 @@ app.use(cors())
 app.use(authenticate(BASIC_AUTH_PASSWD))
 
 
-app.get(MOUNT_PREFIX + '/daily-tracks/:vesselId', (req, res, next) => {
+app.get(MOUNT_PREFIX + '/:vesselId/daily-tracks', (req, res, next) => {
   const bbox = req.query.bbox.split(",")
 
   queryDailyTracks(bbox,
