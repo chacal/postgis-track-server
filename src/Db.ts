@@ -24,7 +24,7 @@ export function queryDailyTracks(bbox: number[], vesselId: string, trackCount: n
   const query = `
     WITH daily_tracks_descending AS (
       SELECT
-        date,
+        date::date,
         ST_AsGeoJSON(ST_Simplify(St_MakeLine(point::geometry ORDER BY timestamp), $9))::json AS route
       FROM (
         SELECT
