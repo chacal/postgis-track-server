@@ -14,7 +14,11 @@ app.use(authenticate(BASIC_AUTH_PASSWD))
 app.get(MOUNT_PREFIX + '/daily-tracks/:vesselId', (req, res, next) => {
   const bbox = req.query.bbox.split(",")
 
-  queryDailyTracks(bbox, req.params.vesselId)
+  queryDailyTracks(bbox,
+    req.params.vesselId,
+    req.query['track-count'],
+    req.query['start-time'] ? new Date(req.query['start-time']) : undefined,
+    req.query['end-time'] ? new Date(req.query['end-time']) : undefined)
     .then(tracks => res.json(tracks))
     .catch(next)
 })
