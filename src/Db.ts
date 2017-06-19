@@ -10,7 +10,7 @@ const dbConfig = {
   host: process.env.DB_HOST || 'localhost',
   port: process.env.DB_PORT || 5432,
   database: process.env.DB_NAME || 'signalk',
-  user: process.env.DB_USER || 'postgres',
+  user: process.env.DB_USER || 'jihartik',
   password: process.env.DB_PASSWD
 }
 
@@ -48,4 +48,30 @@ export function queryDailyTracks(bbox: number[], vesselId: string, trackCount: n
 `
 
   return db.any(query, R.flatten<string|number|Date>([bbox, vesselId, startTime, endTime, trackCount, tolerance]))
+}
+
+export function queryTrackStatistics(vesselId: string, startTime: Date = minDate, endTime: Date = maxDate) {
+  //language=PostgreSQL
+  return db.any(`
+    SELECT
+      date::date,
+      min(timestamp) as "startTime",
+      max(timestamp) as "endTime",
+      ST_Length(ST_Simplify(St_MakeLine(point::geometry ORDER BY timestamp), 0.001)::geography) / 1852 as "trackLengthNm"
+    FROM (
+      SELECT
+        date_trunc('day', timestamp) as date,
+        point,
+        timestamp
+      FROM
+        track
+      WHERE
+        vessel_id = $1 AND
+        timestamp >= timestamp with time zone $2 AND
+        timestamp <= timestamp with time zone $3
+      ORDER BY timestamp ASC) data
+    GROUP BY date
+    ORDER BY date
+  `,
+  [vesselId, startTime, endTime])
 }
