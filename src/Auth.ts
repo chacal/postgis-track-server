@@ -8,7 +8,10 @@ export default function authenticate(requiredPassword) {
     const user = auth(req)
     if(!requiredPassword || (user && user.pass === requiredPassword))
       next()
-    else
-      res.status(401).json({error: 'Basic Auth failed.'})
+    else {
+      res.statusCode = 401;
+      res.setHeader('WWW-Authenticate', 'Basic realm="Tracks"');
+      res.json({error: 'Basic Auth failed.'})
+    }
   }
 }
