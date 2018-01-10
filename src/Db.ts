@@ -47,7 +47,7 @@ export function queryDailyTracks(bbox: number[], vesselId: string, trackCount: n
     SELECT * FROM daily_tracks_descending ORDER BY date;
 `
 
-  return db.any(query, R.flatten<string|number|Date>([bbox, vesselId, startTime, endTime, trackCount, tolerance]))
+  return db.any(query, [...bbox, vesselId, startTime, endTime, trackCount, tolerance])
 }
 
 export function queryTrackStatistics(vesselId: string, startTime: Date = minDate, endTime: Date = maxDate) {
